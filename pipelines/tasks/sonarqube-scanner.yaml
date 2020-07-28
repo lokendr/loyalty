@@ -1,0 +1,24 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: sonarqube-scan
+spec:
+  params:
+    - name: sonar_server
+      type: string
+  resources:
+    inputs:
+      - name: git-repo
+        type: git
+  steps:
+    - args:
+        - >-
+          echo '### Configuring Sonar Server address ###'
+          sonar-scanner -Dsonar.host.url=https://sonarqube-loken-sonar.apps.shared-na4.na4.openshift.opentlc.com
+      command:
+        - /bin/sh
+        - '-c'
+      image: sonarsource/sonar-scanner-cli
+      name: scanner
+      resources: {}
+      workingDir: /workspace/git-repo/loyalty/react-starter-kit
