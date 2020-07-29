@@ -1,8 +1,13 @@
-﻿apiVersion: tekton.dev/v1alpha1
+﻿apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
   name: example-loyalty
 spec:
+  params:
+    - default: ''
+      description: Sonarqube server address
+      name: sonar_server
+      type: string
   resources:
     - name: loyalty-git
       type: git
@@ -27,6 +32,8 @@ spec:
         inputs:
           - name: source
             resource: loyalty-git
+      runAfter:
+        - sonarqube-scan
       taskRef:
         kind: Task
         name: maven
@@ -125,5 +132,17 @@ spec:
       taskRef:
         kind: Task
         name: openshift-client
+    - name: sonarqube-scan
+      params:
+        - name: sonar_server
+          value: >-
+            https://sonarqube-loken-sonar.apps.shared-na4.na4.openshift.opentlc.com
+      resources:
+        inputs:
+          - name: git-repo
+            resource: loyalty-git
+      taskRef:
+        kind: Task
+        name: sonarqube-scan
   workspaces:
     - name: local-maven-repo
