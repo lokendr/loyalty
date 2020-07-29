@@ -12,7 +12,7 @@ spec:
       type: git
       params:
         - name: url
-          value: https://github.com/IBM/loyalty.git
+          value: https://github.com/lokendr/loyalty.git
   - name: event-image
     resourceSpec:
       type: image
